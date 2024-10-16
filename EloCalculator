@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Spikeball Elo Calculator</title>
+</head>
+<body>
+  <h1>Spikeball Elo Calculator</h1>
+
+  <div>
+    <label>Player 1 Team A Elo: <input type="number" id="eloP1A" /></label><br />
+    <label>Player 2 Team A Elo: <input type="number" id="eloP2A" /></label><br />
+    <label>Player 1 Team B Elo: <input type="number" id="eloP1B" /></label><br />
+    <label>Player 2 Team B Elo: <input type="number" id="eloP2B" /></label><br />
+    <label>Point Differential: <input type="number" id="pointDiff" /></label><br />
+    <label>Court Number (1-6): <input type="number" id="courtNum" /></label><br />
+    <label>Did Team A Win? (true/false): <input type="text" id="winnerTeamA" /></label><br />
+    <button onclick="calculateElo()">Calculate Elo Change</button>
+  </div>
+
+  <h2>Results:</h2>
+  <p id="results"></p>
+
+  <script>
+    const K = 32; // K-factor
+
+    function calculateElo() {
+      const eloP1A = parseFloat(document.getElementById('eloP1A').value);
+      const eloP2A = parseFloat(document.getElementById('eloP2A').value);
+      const eloP1B = parseFloat(document.getElementById('eloP1B').value);
+      const eloP2B = parseFloat(document.getElementById('eloP2B').value);
+      const pointDiff = parseInt(document.getElementById('pointDiff').value);
+      const courtNum = parseInt(document.getElementById('courtNum').value);
+      const winnerTeamA = document.getElementById('winnerTeamA').value.toLowerCase() === 'true';
+
+      const eloTeamA = (eloP1A + eloP2A) / 2.0;
+      const eloTeamB = (eloP1B + eloP2B) / 2.0;
+
+      const expectedA = 1 / (1 + Math.pow(10, (eloTeamB - eloTeamA) / 400.0));
+      const actualOutcome = winnerTeamA ? 1 : 0;
+
+      const pointDiffFactor = 1 + (pointDiff / 10.0);
+      const courtFactor = 1 + ((7 - courtNum) / 10.0);
+
+      const eloChange = K * (actualOutcome - expectedA) * pointDiffFactor * courtFactor;
+
+      document.getElementById('results').innerHTML = `
+        Elo change for winners: +${eloChange.toFixed(2)}<br />
+        Elo change for losers: ${(-eloChange).toFixed(2)}
+      `;
+    }
+  </script>
+</body>
+</html>
