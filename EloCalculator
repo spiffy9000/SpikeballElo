@@ -4,23 +4,72 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Spikeball Elo Calculator</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #121212;
+      color: #ffffff;
+      text-align: center;
+      padding: 20px;
+    }
+
+    h1 {
+      margin-bottom: 10px;
+    }
+
+    input {
+      margin: 8px;
+      padding: 8px;
+      border: none;
+      border-radius: 5px;
+      width: 200px;
+    }
+
+    button {
+      margin-top: 10px;
+      padding: 10px 20px;
+      background-color: #4caf50;
+      border: none;
+      border-radius: 5px;
+      color: white;
+      cursor: pointer;
+      font-size: 16px;
+    }
+
+    button:hover {
+      background-color: #45a049;
+    }
+
+    .container {
+      max-width: 600px;
+      margin: 0 auto;
+      background-color: #1e1e1e;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 0 15px rgba(0, 0, 0, 0.5);
+    }
+
+    .result {
+      margin-top: 20px;
+      font-size: 20px;
+    }
+  </style>
 </head>
 <body>
   <h1>Spikeball Elo Calculator</h1>
 
-  <div>
-    <label>Player 1 Team A Elo: <input type="number" id="eloP1A" /></label><br />
-    <label>Player 2 Team A Elo: <input type="number" id="eloP2A" /></label><br />
-    <label>Player 1 Team B Elo: <input type="number" id="eloP1B" /></label><br />
-    <label>Player 2 Team B Elo: <input type="number" id="eloP2B" /></label><br />
-    <label>Point Differential: <input type="number" id="pointDiff" /></label><br />
-    <label>Court Number (1-6): <input type="number" id="courtNum" /></label><br />
-    <label>Did Team A Win? (true/false): <input type="text" id="winnerTeamA" /></label><br />
+  <div class="container">
+    <input type="number" id="eloP1A" placeholder="Player 1 Team A Elo" /><br />
+    <input type="number" id="eloP2A" placeholder="Player 2 Team A Elo" /><br />
+    <input type="number" id="eloP1B" placeholder="Player 1 Team B Elo" /><br />
+    <input type="number" id="eloP2B" placeholder="Player 2 Team B Elo" /><br />
+    <input type="number" id="pointDiff" placeholder="Point Differential" /><br />
+    <input type="number" id="courtNum" placeholder="Court Number (1-6)" /><br />
+    <input type="text" id="winnerTeamA" placeholder="Did Team A Win? (true/false)" /><br />
     <button onclick="calculateElo()">Calculate Elo Change</button>
-  </div>
 
-  <h2>Results:</h2>
-  <p id="results"></p>
+    <div class="result" id="results"></div>
+  </div>
 
   <script>
     const K = 32; // K-factor
@@ -34,6 +83,11 @@
       const courtNum = parseInt(document.getElementById('courtNum').value);
       const winnerTeamA = document.getElementById('winnerTeamA').value.toLowerCase() === 'true';
 
+      if (courtNum < 1 || courtNum > 6) {
+        document.getElementById('results').innerText = 'Invalid court number! Please enter a value between 1 and 6.';
+        return;
+      }
+
       const eloTeamA = (eloP1A + eloP2A) / 2.0;
       const eloTeamB = (eloP1B + eloP2B) / 2.0;
 
@@ -46,8 +100,8 @@
       const eloChange = K * (actualOutcome - expectedA) * pointDiffFactor * courtFactor;
 
       document.getElementById('results').innerHTML = `
-        Elo change for winners: +${eloChange.toFixed(2)}<br />
-        Elo change for losers: ${(-eloChange).toFixed(2)}
+        <p>Elo change for winners: +${eloChange.toFixed(2)}</p>
+        <p>Elo change for losers: ${(-eloChange).toFixed(2)}</p>
       `;
     }
   </script>
